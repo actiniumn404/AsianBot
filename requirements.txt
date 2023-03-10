@@ -1,0 +1,3 @@
+Flask
+PyJwt
+firebase_admin

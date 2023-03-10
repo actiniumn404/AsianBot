@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+    <div id="slideshow">
+        <img id="slideshow__image">
+        <img id="slideshow__image_2" class="transparent">
+        <div id="slideshow__caption">
+            <h1 class="bold">AsianBot</h1>
+            <span>Procrastination no more!</span>
+        </div>
+    </div>
+    <div id="info" class="center">
+        <h1 class="bold">Introducing AsianBot</h1>
+        Somtimes, students just need <i>a push</i> to do their homework. The classic Asian parent is the perfect example
+        of how to apply this push. In a classic Asian household, students who do not complete their homework, or get a
+        B will receive punishment. For students who do not have access to these inspirational Asian Parents, AsianBot
+        attempts to act as a virtual one. Armed with state-of-the-art features like "automatic email home," AsianBot
+        is guaranteed to help you succeed.
+    </div>
+
+    <div id="register_info" class="center">
+        <h1 class="bold">Great! Sign me up!</h1>
+        Unfortunately, with the time constraint, the developer was unable to make a signup command (what a failure).
+        You can, however, sign in through his account.
+    </div>
+
+    <div id="award" class="center">
+        <span id="award__icon"><i class="fa fa-award"></i></span>
+        <span id="award__content">
+            <span class="bold">AsianBot</span> is a proud recipient of the <a href="https://www.youtube.com/watch?v=dQw4w9WgXcQ" target="_blank">Asian Parents' Award</a>.
+        </span>
+    </div>
+
+
+    <script src="{{ url_for("static", filename="js/homepage.js") }}"></script>
+    <link rel="stylesheet" href="{{ url_for("static", filename="css/homepage.css") }}">
+{% endblock %}

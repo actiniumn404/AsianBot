@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" href="{{ url_for("static", filename="css/base.css") }}" />
+    <link rel="icon" href="{{ url_for("static", filename="logo_dark.png") }}"/>
+    <title>{{ title }} - Logle</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- Primary Meta Tags -->
+    <meta name="title" content="AsianBot - Get an A+ ">
+    <meta name="description" content="Get a virtual Asian Parent that forces you to do homework!">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/auth0/jwt-decode/build/jwt-decode.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.0/css/all.min.css">
+</head>
+<body>
+    <nav id="navbar" class="center">
+        <div class="logo">
+            <img src="{{ url_for("static", filename="logo_dark.png") }}">
+            <span class="bold">AsianBot</span>
+        </div>
+
+        {% if uname %}
+            <button></button>
+        {% else %}
+        {% endif %}
+    </nav>
+    <div id="content" class="center">{% block content %}{% endblock %}</div>
+    <footer id="footer" class="center">
+        {% block footer %}
+        &copy; Copyright 2023 by <a href="https://actiniumn404.github.io/" target="_blank">Actiniumn404</a>.
+        {% endblock %}
+    </footer>
+</body>
+</html>
