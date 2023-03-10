@@ -17,7 +17,7 @@
     transform: translateY(-100%) translateX(-50%);
     filter: brightness(20%);
     z-index: 1;
-    height: min(500px, 30vh);
+    height: min(500px, 70vh);
     overflow: hidden;
     max-width: 100%;
 }
