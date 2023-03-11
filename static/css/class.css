@@ -51,6 +51,103 @@ body {
     display: flex;
 }
 
-#info{
+.title{
+    font-weight: 300;
+    margin-top: 0;
+}
+
+#info__name{
+    font-size: 24px;
+    margin: 0;
+}
+
+#info__teacher{
+    font-size: 16px;
+    margin: 0;
+    margin-top: 5px;
+}
+
+#info__descip{
+    display: block;
+    margin-top: 5px;
+}
+
+#work, #assignment, #info{
+    flex: 1;
     padding: 20px;
+}
+
+#work_list {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    justify-items: center;
+}
+
+.assignment {
+    border: 1px solid black;
+    border-radius: 4px;
+    padding: 20px 0 0 0;
+    display: flex;
+    flex-direction: column;
+    width: calc(50% - 20px);
+    cursor: pointer;
+    transition: 0.2s ease;
+    row-gap: 10px;
+    min-width: 200px;
+}
+
+.assignment > *{
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.assignment:hover{
+    background: whitesmoke;
+}
+
+.assignment b{
+    font-size: 24px;
+}
+
+.assignment > span:not(.footer){
+    flex: 1;
+}
+
+.assignment .footer{
+    border-top: 1px solid black;
+    padding: 5px 20px 5px 20px;
+    font-size: 14px;
+}
+
+iframe#assignment_iframe{
+    height: calc(100% - 50px);
+    width: 100%;
+}
+
+.modal{
+    background: rgba(0, 0, 0, 0.8);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 3;
+    width: 100%;
+    height: 100%;
+}
+
+.modal_content{
+    background: white;
+    color: black;
+    width: var(--width);
+    margin: 100px auto 0 auto;
+    padding: 20px;
+}
+
+a{
+    color: var(--red);
+    text-decoration: none;
+}
+
+a:hover{
+    text-decoration: underline;
 }

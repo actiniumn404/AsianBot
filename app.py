@@ -5,6 +5,7 @@ import re
 import string
 import time
 import urllib.parse
+import random
 
 from flask import Flask, render_template, request, jsonify, make_response, redirect
 import firebase_admin
@@ -33,6 +34,9 @@ def decode(token):
     except:
         return None
     return decoded
+
+def generate_id():
+    "".join(str(random.randint(1, 9)) for _ in range(5))
 
 
 @app.route('/')
@@ -78,9 +82,10 @@ def api_login_asdev():
     return res
 
 
-@app.route('/class/<path:id>', defaults={"page": "info"})
-@app.route('/class/<path:id>/<path:page>')
-def class_general(id, page):
+@app.route('/class/<path:id>', defaults={"page": "info", "args": None})
+@app.route('/class/<path:id>/<path:page>', defaults={"args": None})
+@app.route('/class/<path:id>/<path:page>/<path:args>')
+def class_general(id, page, args):
     if "token" not in request.cookies:
         return render_template("student.html", title="Homepage", data={})
     token = decode(request.cookies["token"])
@@ -90,7 +95,25 @@ def class_general(id, page):
     data = root.child("classes").child(str(id)).get()
     data["teacher_realname"] = root.child("users").child(data['teacher']).child("name").get()
 
+    kwargs = {
+        "data": token,
+        "title": data['name'],
+        "page": page,
+        "classdata": data,
+        "classid": id,
+    }
+
     if not page or page not in ["work", "grades", "infractions"]:
         page = "info"
 
-    return render_template("class.html", data=token, title=data['name'], page=page, classdata=data, classid=id)
+    if page == "work":
+        if args:
+            kwargs["page"] = "work_assignment"
+            kwargs["work_data"] = root.child("assignments").child(args).get()
+        else:
+            kwargs["work"] = {}
+            if "work" in data:
+                for work in data["work"]:
+                    kwargs["work"][work] = root.child("assignments").child(work).get()
+
+    return render_template("class.html", **kwargs)

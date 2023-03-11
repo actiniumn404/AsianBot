@@ -3,18 +3,48 @@
     <aside id="tabs_list">
         <a href="/student"><div id="tab__back" class="tab"><i class="fa fa-angle-left"></i> Back</div></a>
         <a href="/class/{{ classid }}"><div id="tab__assignments" class="tab{{ " current" if page == "info" else "" }}"><i class="fas fa-circle-info"></i> Info</div></a>
-        <a href="/class/{{ classid }}/work"><div id="tab__assignments" class="tab{{ " current" if page == "assignments" else "" }}"><i class="fas fa-tasks"></i> Assignments</div></a>
+        <a href="/class/{{ classid }}/work"><div id="tab__assignments" class="tab{{ " current" if page == "work" else "" }}"><i class="fas fa-tasks"></i> Assignments</div></a>
         <a href="/class/{{ classid }}/grades"><div id="tab__grades" class="tab{{ " current" if page == "grades" else "" }}"><img src="{{ url_for("static", filename="logo.png") }}"> Grades</div></a>
         <a href="/class/{{ classid }}/infractions"><div id="tab__infractions" class="tab{{ " current" if page == "infractions" else "" }}"><i class="fa-solid fa-scale-balanced"></i> Infractions</div></a>
     </aside>
 
     {% if page == "info" %}
         <div id="info">
-            <h1>{{ classdata['name'] }}</h1>
-            <h2>Taught by {{ classdata['teacher_realname'] }} (@{{ classdata['teacher'] }})</h2>
-            {{ classdata['description'] }}
+            <h1 class="title">Information</h1>
+            <h1 id="info__name">{{ classdata['name'] }}</h1>
+            <span id="info__descip">{{ classdata['description'] }}</span>
+
+            <h2 id="info__teacher">As taught by {{ classdata['teacher_realname'] }} (@{{ classdata['teacher'] }})</h2>
+        </div>
+    {% elif page == "work" %}
+        <div id="work">
+            <h1 class="title">Assignments</h1>
+            <div id="work_list">
+                {% for assignment_id, assignment_data in work.items() %}
+                    <div class="assignment" onclick="location.pathname = '/class/{{ classid }}/work/{{ assignment_id }}'">
+                        <b>{{ assignment_data['name'] }}</b>
+                        <span>{{ assignment_data['description'] }}</span>
+                        <span class="footer">ID: {{ assignment_id }}</span>
+                    </div>
+                {% endfor %}
+
+            </div>
+        </div>
+    {% elif page == "work_assignment" %}
+        <div id="assignment">
+            <h1 class="title">Assignment: {{ work_data['name'] }}</h1>
+            <iframe id="assignment_iframe" src="https://docs.google.com/forms/d/e/{{ work_data["embed_id"] }}/viewform?embedded=true" width="640" height="3608" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
         </div>
     {% endif %}
+
+    <div class="modal" id="alert_offtask">
+        <div class="modal_content">
+            <h1 class="boldchinese">我们是中国人，做东西要做从头到尾。不能歇。</h1>
+            You were caught being off task. In China, there are no second chances. Your parents have been emailed.
+            <br><br>
+            Programming Club: you can see the email demonstration <a href="https://groups.google.com/g/testingfordev" target="_self">here</a>: It might take a minute to load, since email is slow.
+        </div>
+    </div>
 
     <script src="{{ url_for("static", filename="js/class.js") }}"></script>
     <link rel="stylesheet" href="{{ url_for("static", filename="css/class.css") }}">
