@@ -37,6 +37,8 @@ def decode(token):
 
 @app.route('/')
 def page_home():
+    if "token" not in request.cookies:
+        return render_template("homepage.html", title="Homepage", data={})
     token = decode(request.cookies["token"])
     if not token:
         return render_template("homepage.html", title="Homepage", data={})
