@@ -3,7 +3,7 @@
 <head>
     <link rel="stylesheet" href="{{ url_for("static", filename="css/base.css") }}" />
     <link rel="icon" href="{{ url_for("static", filename="logo_dark.png") }}"/>
-    <title>{{ title }} - Logle</title>
+    <title>{{ title }} - AsianBot</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0"><!-- Primary Meta Tags -->
     <meta name="title" content="AsianBot - Get an A+ ">
@@ -20,10 +20,12 @@
             <span class="bold">AsianBot</span>
         </div>
 
-        {% if uname %}
-            <button></button>
-        {% else %}
-        {% endif %}
+        <div id="navbar__links">
+            {% if data %}
+                <a id="navbar__username" class="link">{{ data['name'] }} <i class="fa-solid fa-caret-down"></i></a>
+            {% else %}
+            {% endif %}
+        </div>
     </nav>
     <div id="content" class="center">{% block content %}{% endblock %}</div>
     <footer id="footer" class="center">

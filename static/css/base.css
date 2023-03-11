@@ -24,6 +24,17 @@ body{
     font-size: 18px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
+}
+
+#navbar__links{
+    display: flex;
+    column-gap: 20px;
+}
+
+#navbar .link{
+    font-family: 'Permanent Marker', cursive;
+    cursor: pointer;
 }
 
 .center{
@@ -65,6 +76,19 @@ body{
 
 .fadeout{
     animation: fadeout 1s linear forwards;
+}
+
+button:not(.nohover){
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+button:not(.nohover):hover{
+    opacity: 0.8;
+}
+
+button:not(.nohover):active{
+    opacity: 0.5;
 }
 
 @keyframes fadein{

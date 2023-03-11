@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+    <aside id="tabs_list">
+        <a href="/student"><div id="tab__back" class="tab"><i class="fa fa-angle-left"></i> Back</div></a>
+        <a href="/class/{{ classid }}"><div id="tab__assignments" class="tab{{ " current" if page == "info" else "" }}"><i class="fas fa-circle-info"></i> Info</div></a>
+        <a href="/class/{{ classid }}/work"><div id="tab__assignments" class="tab{{ " current" if page == "assignments" else "" }}"><i class="fas fa-tasks"></i> Assignments</div></a>
+        <a href="/class/{{ classid }}/grades"><div id="tab__grades" class="tab{{ " current" if page == "grades" else "" }}"><img src="{{ url_for("static", filename="logo.png") }}"> Grades</div></a>
+        <a href="/class/{{ classid }}/infractions"><div id="tab__infractions" class="tab{{ " current" if page == "infractions" else "" }}"><i class="fa-solid fa-scale-balanced"></i> Infractions</div></a>
+    </aside>
+
+    {% if page == "info" %}
+        <div id="info">
+            <h1>{{ classdata['name'] }}</h1>
+            <h2>Taught by {{ classdata['teacher_realname'] }} (@{{ classdata['teacher'] }})</h2>
+            {{ classdata['description'] }}
+        </div>
+    {% endif %}
+
+    <script src="{{ url_for("static", filename="js/class.js") }}"></script>
+    <link rel="stylesheet" href="{{ url_for("static", filename="css/class.css") }}">
+{% endblock %}

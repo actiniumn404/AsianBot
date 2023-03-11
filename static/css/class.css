@@ -1,0 +1,56 @@
+body {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 30px);
+}
+
+#content{
+    flex: 1;
+}
+
+#tabs_list{
+    background: #eee4e4;
+    width: 200px;
+    height: 100%;
+    border: 1px solid #dab1b1;
+}
+
+.tab:hover{
+    background: #ecd9d9;
+}
+
+.tab.current{
+    background: #ecd9d9;
+    border-left: 7px solid #dab1b1;
+    padding-left: 13px;
+}
+
+#tabs_list > a{
+    text-decoration: none;
+}
+
+.tab{
+    color: var(--red);
+    padding: 15px 20px;
+    border-bottom: 1px solid #dab1b1;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    column-gap: 5px;
+    align-items: center;
+}
+
+.tab :is(i, img){
+    display: inline-block;
+    font-size: 18px;
+    width: 26px !important;
+    text-align: center;
+}
+
+#content{
+    display: flex;
+}
+
+#info{
+    padding: 20px;
+}
