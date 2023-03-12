@@ -7,30 +7,40 @@ bad.loop = true
 let tts = new Audio('/static/tts.mp3');
 tts.loop = true
 
+$(".close").click((e)=>{
+    $(e.currentTarget).parent().parent().parent().hide()
+})
 
-document.onkeydown = ()=>{
-    let focus = document.activeElement
-    console.log("test")
-
-    if (focus.tagName === "IFRAME"){
-        console.log("confirmed")
+function getCookie(cname) {
+    let name = cname + "=";
+    let decodedCookie = decodeURIComponent(document.cookie);
+    let ca = decodedCookie.split(';');
+    for (let i = 0; i <ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
     }
+    return "";
 }
 
-document.addEventListener("visibilitychange", (event) => {
-    if (document.visibilityState === "visible") {
-        alarm.pause();
-        alarm.currentTime = 0
-        police.pause()
-        police.currentTime = 0
-        bad.pause()
-        bad.currentTime = 0
-        tts.pause()
-        tts.currentTime = 0
-    } else {
-        police.play()
-        alarm.play()
-        bad.play()
-        tts.play()
-    }
+function notify(reason){
+    fetch("/api/violations/new", {
+        method: "POST",
+        body: JSON.stringify({
+            jwt: getCookie("token"),
+            type: reason
+        }),
+         headers: {
+            "Content-type": "application/json; charset=UTF-8"
+        }
+    })
+}
+
+Array.from($(".timestamp")).forEach((e)=>{
+    let d = new Date(parseInt($(e).html()) * 1000)
+    $(e).html(`${d.getHours() % 12 == 0 ? 12: d.getHours() % 12}:${d.getMinutes() + 1} ${d.getHours() >= 12 ? "PM" : "AM"} ${d.getMonth() + 1}/${d.getDate()}/${d.getFullYear()}`)
 })

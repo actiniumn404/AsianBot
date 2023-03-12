@@ -47,7 +47,7 @@
     pointer-events: none;
 }
 
-#joinclass{
+#createclass{
     background: var(--dark-blue);
     border: 0;
     border-radius: 4px;

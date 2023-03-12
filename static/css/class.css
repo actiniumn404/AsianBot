@@ -1,7 +1,7 @@
 body {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 30px);
+    height: calc(100vh - 50px);
 }
 
 #content{
@@ -72,7 +72,7 @@ body {
     margin-top: 5px;
 }
 
-#work, #assignment, #info{
+#work, #assignment, #info, #infractions{
     flex: 1;
     padding: 20px;
 }
@@ -133,6 +133,7 @@ iframe#assignment_iframe{
     z-index: 3;
     width: 100%;
     height: 100%;
+    display: none;
 }
 
 .modal_content{
@@ -150,4 +151,45 @@ a{
 
 a:hover{
     text-decoration: underline;
+}
+
+.close {
+    display: inline-block;
+    cursor: pointer;
+    color: red;
+    height: 32px;
+    width: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close::before{
+    content: "×";
+}
+
+.close:hover::before{
+    content: "☹";
+}
+
+.close:hover{ /* Since I'm feeling like it */
+    animation: spin 1s infinite ease;
+}
+
+@keyframes spin{
+    from{
+        transform: rotate(0deg);
+    }to{
+        transform: rotate(360deg);
+    }
+}
+
+@media print{
+    #assignment_iframe{
+        height: auto;
+        position: fixed;
+        width: 100vw;
+        top: 0;
+        left: 0;
+    }
 }

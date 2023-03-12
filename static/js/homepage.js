@@ -31,3 +31,6 @@ window.onload = ()=>{
         }
     }, 4000)
 }
+
+$("#loginasdev").click(()=>{login_andrew()})
+$("#loginasgrad").click(()=>{login_grad()})

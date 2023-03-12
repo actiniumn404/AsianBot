@@ -6,6 +6,7 @@ import string
 import time
 import urllib.parse
 import random
+import requests
 
 from flask import Flask, render_template, request, jsonify, make_response, redirect
 import firebase_admin
@@ -52,10 +53,13 @@ def page_home():
 @app.route('/student')
 def page_student():
     if "token" not in request.cookies:
-        return render_template("student.html", title="Choose Class", data={})
+        return redirect("/?error=login")
     token = decode(request.cookies["token"])
     if not token:
         return redirect("/?error=login")
+
+    if token["teach"]:
+        return redirect("/teacher")
 
     classes = root.child("users").child(token['uname']).child("classes").get()
     res = {}
@@ -66,14 +70,53 @@ def page_student():
 
     return render_template("student.html", title="Choose Class", data=token, classes=res)
 
+
+@app.route('/teacher')
+def page_teacher():
+    if "token" not in request.cookies:
+        return redirect("/?error=login")
+    token = decode(request.cookies["token"])
+    if not token:
+        return redirect("/?error=login")
+    if not token["teach"]:
+        return redirect("/student")
+
+    classes = root.child("users").child(token['uname']).child("classes").get()
+    res = {}
+
+    for item in classes:
+        res[item] = root.child("classes").child(item).get()
+        res[item]["teacher_realname"] = root.child("users").child(res[item]['teacher']).child("name").get()
+
+    return render_template("teacher.html", title="Choose Class", data=token, classes=res)
+
+
 @app.route('/api/login/asdev', methods=["POST"])
 def api_login_asdev():
     token = jwt.encode({
         "id": str(root.child("users").child("achen10").child("id").get()),
         "uname": "achen10",
-        "name": "Andrew Chen",
+        "name": str(root.child("users").child("achen10").child("name").get()),
         "iat": math.floor(datetime.datetime.timestamp(datetime.datetime.now())), # Now
-        "exp": math.floor(datetime.datetime.timestamp(datetime.datetime.now() + datetime.timedelta(days=30)))
+        "exp": math.floor(datetime.datetime.timestamp(datetime.datetime.now() + datetime.timedelta(days=30))),
+        "teach": False
+    }, key=os.getenv("JWTSecret"), algorithm="HS256")
+
+    res = make_response(token, 200)
+    res.set_cookie("token", token)
+
+    return res
+
+
+@app.route('/api/login/asgrad', methods=["POST"])
+def api_login_asgrad():
+    token = jwt.encode({
+        "id": str(root.child("users").child("mrjgrad").child("id").get()),
+        "uname": "mrjgrad",
+        "name": str(root.child("users").child("mrjgrad").child("name").get()),
+        "iat": math.floor(datetime.datetime.timestamp(datetime.datetime.now())), # Now
+        "exp": math.floor(datetime.datetime.timestamp(datetime.datetime.now() + datetime.timedelta(days=30))),
+        "teach": True
     }, key=os.getenv("JWTSecret"), algorithm="HS256")
 
     res = make_response(token, 200)
@@ -87,7 +130,7 @@ def api_login_asdev():
 @app.route('/class/<path:id>/<path:page>/<path:args>')
 def class_general(id, page, args):
     if "token" not in request.cookies:
-        return render_template("student.html", title="Homepage", data={})
+        return redirect("/?error=login")
     token = decode(request.cookies["token"])
     if not token:
         return redirect("/?error=login")
@@ -115,5 +158,40 @@ def class_general(id, page, args):
             if "work" in data:
                 for work in data["work"]:
                     kwargs["work"][work] = root.child("assignments").child(work).get()
+    elif page == "infractions":
+        if token["teach"]:
+            kwargs["infractions_students"] = {}
+            for student in kwargs["classdata"]["students"]:
+                s = root.child("users").child(str(student))
+                kwargs["infractions_students"][s.child("name").get() or student] = s.child("violations").get() or []
+        else:
+            kwargs["infractions"] = root.child("users").child(str(token["uname"])).child("violations").get() or []
 
     return render_template("class.html", **kwargs)
+
+
+@app.route("/api/violations/new", methods=["POST"])
+def new_violation():
+    data = request.get_json()
+    violation_type = data.get("type")
+    auth = data.get("jwt")
+    timestamp = math.floor(datetime.datetime.timestamp(datetime.datetime.now()))
+
+    decoded = decode(auth)
+
+    if not decoded:
+        return "Invalid authentication token", 401
+
+    violations = root.child("users").child(decoded["uname"]).child("violations").get() or []
+    violations.append({"type": violation_type, "time": timestamp})
+
+    root.child("users").child(decoded["uname"]).child("violations").set(violations)
+
+    name = root.child("users").child(decoded["uname"]).child("name").get()
+    requests.post("https://postmail.invotes.com/send", json={
+        "access_token": "b27p549060fgy42skc4d5uf2",
+        "text": f'Dear parent of {name}:\nYour child {name} was not doing their homework today. They instead {violation_type}. Please take immediate action.\n\nSincerely,\n\tAsianBot Child Management Team',
+        "subject": "Your child is not doing their homework"
+    },  headers={'Content-Type': 'application/json'})
+
+    return "Success", 200

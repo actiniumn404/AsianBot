@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     <aside id="tabs_list">
-        <a href="/student"><div id="tab__back" class="tab"><i class="fa fa-angle-left"></i> Back</div></a>
+        <a href="{{ "/teacher" if data["teach"] else "/student" }}"><div id="tab__back" class="tab"><i class="fa fa-angle-left"></i> Back</div></a>
         <a href="/class/{{ classid }}"><div id="tab__assignments" class="tab{{ " current" if page == "info" else "" }}"><i class="fas fa-circle-info"></i> Info</div></a>
         <a href="/class/{{ classid }}/work"><div id="tab__assignments" class="tab{{ " current" if page == "work" else "" }}"><i class="fas fa-tasks"></i> Assignments</div></a>
         <a href="/class/{{ classid }}/grades"><div id="tab__grades" class="tab{{ " current" if page == "grades" else "" }}"><img src="{{ url_for("static", filename="logo.png") }}"> Grades</div></a>
@@ -14,7 +14,9 @@
             <h1 id="info__name">{{ classdata['name'] }}</h1>
             <span id="info__descip">{{ classdata['description'] }}</span>
 
-            <h2 id="info__teacher">As taught by {{ classdata['teacher_realname'] }} (@{{ classdata['teacher'] }})</h2>
+            {% if not data["teach"] %}
+                <h2 id="info__teacher">As taught by {{ classdata['teacher_realname'] }} (@{{ classdata['teacher'] }})</h2>
+            {% endif %}
         </div>
     {% elif page == "work" %}
         <div id="work">
@@ -35,14 +37,71 @@
             <h1 class="title">Assignment: {{ work_data['name'] }}</h1>
             <iframe id="assignment_iframe" src="https://docs.google.com/forms/d/e/{{ work_data["embed_id"] }}/viewform?embedded=true" width="640" height="3608" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
         </div>
+        <script defer>
+            document.addEventListener("visibilitychange", (event) => {
+                if (document.visibilityState === "visible") {
+                    alarm.pause();
+                    alarm.currentTime = 0
+                    police.pause()
+                    police.currentTime = 0
+                    bad.pause()
+                    bad.currentTime = 0
+                    tts.pause()
+                    tts.currentTime = 0
+                } else {
+                    police.play()
+                    alarm.play()
+                    bad.play()
+                    tts.play()
+                    $("#alert_offtask").show()
+                    notify("clicked on another tab")
+                }
+            })
+            const args = new URLSearchParams(window.location.search)
+            if (!args.get("dev")){
+                window.onbeforeunload = ()=>{
+                    notify("exited the homework page")
+                    $("#try_exit").show()
+                    return true
+                }
+            }
+        </script>
+    {% elif page == "infractions" %}
+        <div id="infractions">
+            <h1 class="title">Infractions</h1>
+            {% if data["teach"] %}
+                {{ infractions_students }}
+            {% else %}
+                <ol id="infractions_list">
+                    {% for infraction in infractions %}
+                        <li class="infraction">
+                            <b>You {{ infraction["type"] }}</b>
+                            <span class="timestamp">{{ infraction["time"] }}</span>
+                        </li>
+                    {% endfor %}
+                </ol>
+                {% if not infractions %}
+                    🎉 No Infractions!
+                {% endif %}
+            {% endif %}
+        </div>
     {% endif %}
 
     <div class="modal" id="alert_offtask">
         <div class="modal_content">
-            <h1 class="boldchinese">我们是中国人，做东西要做从头到尾。不能歇。</h1>
-            You were caught being off task. In China, there are no second chances. Your parents have been emailed.
+            <h1 class="boldchinese">我们是中国人，做东西要做从头到尾。不能歇。<span class="close"></span> </h1>
+            You were caught being off task. In China, there are no second chances. Your parents have been notified.
             <br><br>
-            Programming Club: you can see the email demonstration <a href="https://groups.google.com/g/testingfordev" target="_self">here</a>: It might take a minute to load, since email is slow.
+            Programming Club: you can see the email demonstration <a href="https://groups.google.com/g/hackathon-email-testing" target="_self">here</a>: It might take a minute to load, since email is slow.
+        </div>
+    </div>
+
+    <div class="modal" id="try_exit">
+        <div class="modal_content">
+            <h1 class="boldchinese">我们是中国人，不能懈怠。 <span class="close"></span></h1>
+            ARE YOU TRYING TO EXIT THE PAGE TO PRETEND YOU DON'T HAVE HOMEWORK? In China, we do everything in one sitting, and there are no second chances. Your parents have been notified.
+            <br><br>
+            Programming Club: you can see the email demonstration <a href="https://groups.google.com/g/hackathon-email-testing" target="_self">here</a>: It might take a minute to load, since email is slow.
         </div>
     </div>
 

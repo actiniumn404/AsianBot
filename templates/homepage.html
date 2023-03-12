@@ -20,7 +20,17 @@
     <div id="register_info" class="center">
         <h1 class="bold">Great! Sign me up!</h1>
         Unfortunately, with the time constraint, the developer was unable to make a signup command (what a failure).
-        You can, however, sign in through his account.
+        You can, however, sign in through his account. In order to emulate a classroom, you may also sign in as a specific
+        Johannes Grad.<br>
+
+        <div id="register_info_centered">
+            <button id="loginasdev">
+                Login as Andrew
+            </button>
+            <button id="loginasgrad">
+                Login as Mr. Grad
+            </button>
+        </div>
     </div>
 
     <div id="award" class="center">
@@ -30,7 +40,16 @@
         </span>
     </div>
 
+    <div id="disclaimer" class="center">
+        <h1 class="bold">Disclaimer</h1>
+        AsianBot is still in its development phase, and is not bug free. This is a prototype to show the potential of AsianBot.
+        I can say for a fact that there are probably some bugs here. Regardless, please don't go bug hunting today.
+        Maybe another day...just maybe.
+    </div>
+
 
     <script src="{{ url_for("static", filename="js/homepage.js") }}"></script>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="{{ url_for("static", filename="js/particle.js") }}"></script>
     <link rel="stylesheet" href="{{ url_for("static", filename="css/homepage.css") }}">
 {% endblock %}

@@ -9,6 +9,7 @@
     display: block;
     overflow: hidden;
     max-width: 100%;
+    z-index:3;
 }
 
 #slideshow__image_2{
@@ -16,7 +17,7 @@
     left: 50%;
     transform: translateY(-100%) translateX(-50%);
     filter: brightness(20%);
-    z-index: 1;
+    z-index: 2;
     height: min(500px, 70vh);
     overflow: hidden;
     max-width: 100%;
@@ -28,11 +29,13 @@
 
 #slideshow__caption{
     position: absolute;
-    z-index: 2;
+    z-index: 5;
     left: 50%;
     transform: translateY(calc(-100% - 20px)) translateX(-50%);
     color: white;
     text-align: center;
+    padding: 10px 20px;
+    backdrop-filter: blur(4px);
 }
 
 #slideshow__caption h1{
@@ -87,4 +90,37 @@
 
 :is(#register_info, #info) h1{
     margin-top: 0;
+}
+
+#loginasdev, #loginasgrad{
+    background: var(--dark-blue);
+    color: var(--red);
+    padding: 20px;
+    font-size: 20px;
+    font-weight: 900;
+    border-radius: 4px;
+    border: 0;
+    margin: 20px 0 0 0;
+    outline: none;
+    display: block;
+}
+
+#register_info_centered{
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+.particles-js-canvas-el{
+    position: absolute;
+    top: 60px;
+    z-index: 4;
+    height: min(500px, 70vh) !important;
+}
+
+@media (max-height: 714px){
+    #slideshow__image, #slideshow__image_2{
+        height: 70vh;
+        width: auto;
+    }
 }

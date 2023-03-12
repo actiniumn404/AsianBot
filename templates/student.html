@@ -6,7 +6,7 @@
         {% for classroom in classes %}
             <div class="class" onclick="location.pathname = '/class/{{ classroom }}'">
                 <b>{{ classes[classroom]['name'] }}</b>
-                <span>Taught by {{ classes[classroom]['teacher_realname'] }} (@{{ classes[classroom]['teacher'] }})</span>
+                <span>{{ classes[classroom]["description"] }} <br><br> Taught by {{ classes[classroom]['teacher_realname'] }} (@{{ classes[classroom]['teacher'] }})</span>
                 <span class="footer">ID: {{ classroom }}</span>
             </div>
         {% endfor %}
