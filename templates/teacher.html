@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 {% block content %}
     <h1>My Classes</h1>
-    <button id="createclass">Create a Class</button>
+    <!--<button id="createclass">Create a Class</button>-->
     <div id="classes">
         {% for classroom in classes %}
             <div class="class" onclick="location.pathname = '/class/{{ classroom }}'">
