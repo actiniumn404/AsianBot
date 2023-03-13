@@ -166,6 +166,16 @@ def class_general(id, page, args):
                 kwargs["infractions_students"][s.child("name").get() or student] = s.child("violations").get() or []
         else:
             kwargs["infractions"] = root.child("users").child(str(token["uname"])).child("violations").get() or []
+    elif page == "grades":
+        kwargs["work"] = {}
+        if "work" in data:
+            for work in data["work"]:
+                kwargs["work"][work] = root.child("assignments").child(work).get()
+        if token["teach"]:
+            kwargs["students"] = []
+            for student in kwargs["classdata"]["students"]:
+                kwargs["students"].append([student, root.child("users").child(str(student)).child("name").get()])
+        kwargs["grades"] = root.child("classes").child(str(id)).child("grades").get()
 
     return render_template("class.html", **kwargs)
 

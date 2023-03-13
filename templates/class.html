@@ -29,48 +29,65 @@
                         <span class="footer">ID: {{ assignment_id }}</span>
                     </div>
                 {% endfor %}
-
+                {% if not work %}
+                     🙁 No Assignments
+                {% endif %}
             </div>
         </div>
     {% elif page == "work_assignment" %}
         <div id="assignment">
+            <h2 class="subtitle" style="margin:0;font-weight:200;">{{ "Teacher View" if data["teach"] else "Student View" }}</h2>
             <h1 class="title">Assignment: {{ work_data['name'] }}</h1>
             <iframe id="assignment_iframe" src="https://docs.google.com/forms/d/e/{{ work_data["embed_id"] }}/viewform?embedded=true" width="640" height="3608" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
         </div>
         <script defer>
-            document.addEventListener("visibilitychange", (event) => {
-                if (document.visibilityState === "visible") {
-                    alarm.pause();
-                    alarm.currentTime = 0
-                    police.pause()
-                    police.currentTime = 0
-                    bad.pause()
-                    bad.currentTime = 0
-                    tts.pause()
-                    tts.currentTime = 0
-                } else {
-                    police.play()
-                    alarm.play()
-                    bad.play()
-                    tts.play()
-                    $("#alert_offtask").show()
-                    notify("clicked on another tab")
-                }
-            })
+            let teacher = {{ "true" if data["teach"] else "false" }};
             const args = new URLSearchParams(window.location.search)
-            if (!args.get("dev")){
+            if (!args.get("dev") && !teacher){
                 window.onbeforeunload = ()=>{
                     notify("exited the homework page")
                     $("#try_exit").show()
                     return true
                 }
+                document.addEventListener("visibilitychange", (event) => {
+                    if (document.visibilityState === "visible") {
+                        alarm.pause();
+                        alarm.currentTime = 0
+                        police.pause()
+                        police.currentTime = 0
+                        bad.pause()
+                        bad.currentTime = 0
+                        tts.pause()
+                        tts.currentTime = 0
+                    } else {
+                        police.play()
+                        alarm.play()
+                        bad.play()
+                        tts.play()
+                        $("#alert_offtask").show()
+                        notify("clicked on another tab")
+                    }
+                })
             }
         </script>
     {% elif page == "infractions" %}
         <div id="infractions">
-            <h1 class="title">Infractions</h1>
+            <h1 class="title">Your Students' Infractions</h1>
             {% if data["teach"] %}
-                {{ infractions_students }}
+                {% for student, array in infractions_students.items() %}
+                    <h3>{{ student }}</h3>
+                    <ol id="infractions_list">
+                    {% for infraction in array %}
+                        <li class="infraction">
+                            <b>They {{ infraction["type"] }}</b>
+                            <span class="timestamp">{{ infraction["time"] }}</span>
+                        </li>
+                    {% endfor %}
+                    {% if not array %}
+                        🎉 No Infractions!
+                    {% endif %}
+                    </ol>
+                {% endfor %}
             {% else %}
                 <ol id="infractions_list">
                     {% for infraction in infractions %}
@@ -85,6 +102,45 @@
                 {% endif %}
             {% endif %}
         </div>
+
+    {% elif page == "grades" %}
+        {% if data["teach"] %}
+            <div id="grades">
+                <h1 class="title">Your Students' Grades</h1>
+                <table>
+                    <tr>
+                        <th>/</th>
+                        {% for student in students %}
+                            <th>{{ student[1] }}</th>
+                        {% endfor %}
+                    </tr>
+                {% for work_id, assignment in work.items() %}
+                    <tr>
+                        <th>{{ assignment["name"] }}</th>
+                        {% for student in students %}
+                            <td>{{ grades.get(work_id, {}).get(student[0], {}) or "-" }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+                </table>
+            </div>
+        {% else %}
+            <div id="grades">
+                <h1 class="title">Your Grades</h1>
+                <table>
+                    <tr>
+                        <th>/</th>
+                        <th>Your Grade</th>
+                    </tr>
+                {% for work_id, assignment in work.items() %}
+                    <tr>
+                        <th>{{ assignment["name"] }}</th>
+                        <td>{{ grades.get(work_id, {}).get(data["uname"], {}) or "-" }}</td>
+                    </tr>
+                {% endfor %}
+                </table>
+            </div>
+        {% endif %}
     {% endif %}
 
     <div class="modal" id="alert_offtask">
